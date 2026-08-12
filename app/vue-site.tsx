@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import Image from "../src/image";
 import { useMemo, useState } from "react";
 
 type Project = {
@@ -105,7 +105,7 @@ export function VueSite() {
           <div className="footer-left"><div className="footer-brand"><Image src="/images/vue-logo-official.png" alt="VUE 臻域國際不動產" width={300} height={124} /></div><div className="company-info"><h3>聯絡資訊</h3><div className="company-lines"><p>統一編號：60307872</p><p><a href="mailto:info@vue.com.tw">info@vue.com.tw</a></p><p>臺北市信義區忠孝東路4段563號11樓</p></div></div></div>
           <div className="social-area"><h3>FOLLOW VUE</h3><div className="socials"><a className="instagram" href="https://www.instagram.com/vue.com.tw" target="_blank" rel="noreferrer" aria-label="Instagram"><Image src="/icons/instagram.svg" alt="" width={56} height={56} /></a><a href="https://www.facebook.com/vue.com.tw" target="_blank" rel="noreferrer" aria-label="Facebook"><Image src="/icons/facebook.svg" alt="" width={56} height={56} /></a><a href="https://page.line.me/vue.com.tw?openQrModal=true" target="_blank" rel="noreferrer" aria-label="LINE"><Image src="/icons/line.svg" alt="" width={56} height={56} /></a></div></div>
         </div>
-        <div className="footer-bottom"><div className="legal-links"><a href="/legal/privacy-policy">隱私權與免責聲明</a><span>|</span><a href="/legal/terms-of-service">服務條款</a><span>|</span><a href="/legal/real-estate-brokerage-license">不動產經紀業許可</a></div><p>© 2026 VUE 臻域國際不動產有限公司</p><p>VUE INTERNATIONAL REAL ESTATE</p></div>
+        <div className="footer-bottom"><div className="legal-links"><a href="#/legal/privacy-policy">隱私權與免責聲明</a><span>|</span><a href="#/legal/terms-of-service">服務條款</a><span>|</span><a href="#/legal/real-estate-brokerage-license">不動產經紀業許可</a></div><p>© 2026 VUE 臻域國際不動產有限公司</p><p>VUE INTERNATIONAL REAL ESTATE</p></div>
       </footer>
     </main>
   );

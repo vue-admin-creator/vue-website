@@ -1,7 +1,7 @@
-import Image from "next/image";
+import Image from "../../src/image";
 
 export function LegalLayout({ title, children }: { title: string; children: React.ReactNode }) {
-  return <main className="legal-shell"><header className="legal-header"><a href="/"><Image src="/images/vue-logo-official.png" alt="VUE 臻域國際不動產" width={260} height={107} /></a></header><article className="legal-page"><a className="back" href="/">← 返回首頁</a><h1>{title}</h1>{children}</article></main>;
+  return <main className="legal-shell"><header className="legal-header"><a href="#/"><Image src="/images/vue-logo-official.png" alt="VUE 臻域國際不動產" width={260} height={107} /></a></header><article className="legal-page"><a className="back" href="#/">← 返回首頁</a><h1>{title}</h1>{children}</article></main>;
 }
 
 export function LegalContact() {
