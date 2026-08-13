@@ -96,7 +96,7 @@ export function VueSite() {
         {filtered.length === 0 && <div className="empty"><p>目前沒有符合條件的建案</p><button onClick={() => { setCountry("全部地區"); setStatus("全部狀態"); setQuery(""); }}>清除篩選</button></div>}
       </section>
 
-      <section className="global section"><p className="section-index">03 — GLOBAL NETWORK</p><div className="global-copy"><h2>美國深耕，<br />全球佈局。</h2><div><p>NEW YORK · BOSTON · CALIFORNIA · ARIZONA</p><p>持續拓展倫敦、澳洲等關鍵市場，實踐一站式全球置產願景。</p></div></div></section>
+      <section className="global section"><p className="section-index">03 — GLOBAL NETWORK</p><div className="global-copy"><h2>美國深耕，<br />全球佈局。</h2><div><p>NEW YORK · BOSTON · CALIFORNIA · ARIZONA</p></div></div></section>
 
       <section className="contact" id="contact"><p>START YOUR GLOBAL JOURNEY</p><h2>讓世界，成為您的資產版圖。</h2><div className="contact-actions"><a href="https://tally.so/r/aQrWzq" target="_blank" rel="noreferrer">預約專業諮詢 <span>↗</span></a><a href="https://tally.so/r/aQrWzq" target="_blank" rel="noreferrer">報名線上講座 <span>↗</span></a></div></section>
 
