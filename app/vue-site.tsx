@@ -69,7 +69,7 @@ export function VueSite() {
     const statusMatch = status === "全部狀態" || project.status === status;
     const haystack = `${project.zh} ${project.en} ${project.city}`.toLowerCase();
     return countryMatch && statusMatch && haystack.includes(query.toLowerCase().trim());
-  }), [country, status, query]);
+  }), [projects, country, status, query]);
 
   return (
     <main>
