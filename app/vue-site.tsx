@@ -96,7 +96,26 @@ export function VueSite() {
         {filtered.length === 0 && <div className="empty"><p>目前沒有符合條件的建案</p><button onClick={() => { setCountry("全部地區"); setStatus("全部狀態"); setQuery(""); }}>清除篩選</button></div>}
       </section>
 
-      <section className="global section"><p className="section-index">03 — GLOBAL NETWORK</p><div className="global-copy"><h2>美國深耕，<br />全球佈局。</h2><div><p>NEW YORK · BOSTON · CALIFORNIA · ARIZONA</p></div></div></section>
+      <section className="global section">
+        <div className="global-heading">
+          <p className="section-index">03 — UNITED STATES</p>
+          <h2>深耕美國</h2>
+        </div>
+        <div className="city-grid" aria-label="美國服務城市">
+          {[
+            ["/images/hero.jpg", "紐約", "NEW YORK"],
+            ["/images/project-1.jpg", "波士頓", "BOSTON"],
+            ["/images/project-4.jpg", "加州", "CALIFORNIA"],
+            ["/images/project-5.jpg", "亞利桑那", "ARIZONA"],
+          ].map(([image, zh, en]) => (
+            <article className="city-card" key={en}>
+              <Image src={image} alt={`${zh}城市代表景觀`} fill sizes="(max-width: 620px) 86vw, (max-width: 900px) 43vw, 24vw" />
+              <div className="city-shade" />
+              <div className="city-name"><h3>{zh}</h3><p>{en}</p></div>
+            </article>
+          ))}
+        </div>
+      </section>
 
       <section className="contact" id="contact"><p>START YOUR GLOBAL JOURNEY</p><h2>讓世界，成為您的資產版圖。</h2><div className="contact-actions"><a href="https://tally.so/r/aQrWzq" target="_blank" rel="noreferrer">預約專業諮詢 <span>↗</span></a><a href="https://tally.so/r/aQrWzq" target="_blank" rel="noreferrer">報名線上講座 <span>↗</span></a></div></section>
 
