@@ -3,8 +3,7 @@
 import Image from "../src/image";
 import { useEffect, useMemo, useState } from "react";
 
-const PROJECTS_API = "https://bnudfjggbcuujfxwrker.supabase.co/rest/v1/projects";
-const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_JHZQR3MvxGsVLnMSrIA3PA_tTEZOnZW";
+const PROJECTS_API = "https://bnudfjggbcuujfxwrker.supabase.co/functions/v1/published-projects";
 
 type Project = {
   id: string;
@@ -31,16 +30,7 @@ export function VueSite() {
 
   useEffect(() => {
     const controller = new AbortController();
-    const query = new URLSearchParams({
-      select: "id,title_zh,title_en,country,city,status,rooms,area,price,delivery,image_url",
-      is_published: "eq.true",
-      order: "sort_order.asc",
-    });
-
-    fetch(`${PROJECTS_API}?${query}`, {
-      headers: {
-        apikey: SUPABASE_PUBLISHABLE_KEY,
-      },
+    fetch(PROJECTS_API, {
       cache: "no-store",
       signal: controller.signal,
     })
