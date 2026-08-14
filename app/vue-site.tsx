@@ -1,10 +1,11 @@
 "use client";
 
 import Image from "../src/image";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { supabase } from "../src/supabase";
 
 type Project = {
-  id: number;
+  id: string;
   image: string;
   country: string;
   city: string;
@@ -17,13 +18,11 @@ type Project = {
   delivery: string;
 };
 
-const projects: Project[] = [
-  { id: 1, image: "/images/hero.jpg", country: "美國", city: "紐約", status: "精選", zh: "曼哈頓天際奢邸", en: "MANHATTAN SKYLINE RESIDENCES", rooms: "1–3 房", area: "18–42 坪", price: "USD 1.25M 起", delivery: "現房" },
-  { id: 2, image: "/images/project-1.jpg", country: "美國", city: "波士頓", status: "新案", zh: "查爾斯河畔名邸", en: "CHARLES RIVER COLLECTION", rooms: "1–3 房", area: "16–36 坪", price: "USD 850K 起", delivery: "2027 Q2" },
-  { id: 3, image: "/images/project-2.jpg", country: "英國", city: "倫敦", status: "精選", zh: "西敏河岸御邸", en: "WESTMINSTER RIVERSIDE", rooms: "Studio–3 房", area: "12–31 坪", price: "GBP 680K 起", delivery: "2026 Q4" },
-  { id: 4, image: "/images/project-3.jpg", country: "澳洲", city: "墨爾本", status: "新案", zh: "雅拉河城市寓所", en: "YARRA CITY RESIDENCES", rooms: "1–3 房", area: "14–33 坪", price: "AUD 720K 起", delivery: "2028 Q1" },
-  { id: 5, image: "/images/project-4.jpg", country: "美國", city: "加州", status: "即將完售", zh: "灣區森活美學居", en: "BAY AREA GARDEN HOMES", rooms: "2–4 房", area: "28–58 坪", price: "USD 1.08M 起", delivery: "2026 Q3" },
-  { id: 6, image: "/images/project-5.jpg", country: "美國", city: "亞利桑那", status: "精選", zh: "鳳凰城沙漠藝境", en: "SONORAN DESERT LIVING", rooms: "2–4 房", area: "32–66 坪", price: "USD 590K 起", delivery: "現房" },
+const fallbackProjects: Project[] = [
+  { id: "fallback-1", image: "/images/hero.jpg", country: "美國", city: "紐約", status: "精選", zh: "曼哈頓天際奢邸", en: "MANHATTAN SKYLINE RESIDENCES", rooms: "1–3 房", area: "18–42 坪", price: "USD 1.25M 起", delivery: "現房" },
+  { id: "fallback-2", image: "/images/project-1.jpg", country: "美國", city: "波士頓", status: "新案", zh: "查爾斯河畔名邸", en: "CHARLES RIVER COLLECTION", rooms: "1–3 房", area: "16–36 坪", price: "USD 850K 起", delivery: "2027 Q2" },
+  { id: "fallback-3", image: "/images/city-california.jpg", country: "美國", city: "加州", status: "即將完售", zh: "灣區森活美學居", en: "BAY AREA GARDEN HOMES", rooms: "2–4 房", area: "28–58 坪", price: "USD 1.08M 起", delivery: "2026 Q3" },
+  { id: "fallback-4", image: "/images/city-arizona.jpg", country: "美國", city: "亞利桑那州", status: "精選", zh: "鳳凰城沙漠藝境", en: "SONORAN DESERT LIVING", rooms: "2–4 房", area: "32–66 坪", price: "USD 590K 起", delivery: "現房" },
 ];
 
 export function VueSite() {
@@ -31,6 +30,27 @@ export function VueSite() {
   const [status, setStatus] = useState("全部狀態");
   const [query, setQuery] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [projects, setProjects] = useState<Project[]>(fallbackProjects);
+
+  useEffect(() => {
+    supabase.from("projects").select("id,title_zh,title_en,country,city,status,rooms,area,price,delivery,image_url").eq("is_published", true).order("sort_order")
+      .then(({ data, error }: any) => {
+        if (error) { console.error("Unable to load projects", error); return; }
+        setProjects((data ?? []).map((item: any) => ({
+          id: item.id,
+          image: item.image_url || "/images/hero.jpg",
+          country: item.country,
+          city: item.city,
+          status: item.status,
+          zh: item.title_zh,
+          en: item.title_en,
+          rooms: item.rooms,
+          area: item.area,
+          price: item.price,
+          delivery: item.delivery,
+        })));
+      });
+  }, []);
 
   const filtered = useMemo(() => projects.filter((project) => {
     const countryMatch = country === "全部地區" || project.country === country;
@@ -80,7 +100,7 @@ export function VueSite() {
       <section className="projects section" id="projects">
         <div className="projects-heading"><div><p className="section-index">02 — SELECTED PROJECTS</p><h2>全球嚴選建案</h2></div><p>以專業評估與長期眼光，為您精選世界關鍵城市中值得關注的居所與資產。</p></div>
         <div className="filters" aria-label="建案篩選">
-          <label><span>地區</span><select value={country} onChange={(e) => setCountry(e.target.value)}><option>全部地區</option><option>美國</option><option>英國</option><option>澳洲</option></select></label>
+          <label><span>地區</span><select value={country} onChange={(e) => setCountry(e.target.value)}><option>全部地區</option><option>美國</option></select></label>
           <label><span>狀態</span><select value={status} onChange={(e) => setStatus(e.target.value)}><option>全部狀態</option><option>精選</option><option>新案</option><option>即將完售</option></select></label>
           <label className="search"><span>搜尋</span><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="建案名稱或城市" /></label>
           <p>{String(filtered.length).padStart(2, "0")} PROJECTS</p>
