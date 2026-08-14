@@ -2,7 +2,9 @@
 
 import Image from "../src/image";
 import { useEffect, useMemo, useState } from "react";
-import { supabase } from "../src/supabase";
+
+const PROJECTS_API = "https://bnudfjggbcuujfxwrker.supabase.co/rest/v1/projects";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_JHZQR3MvxGsVLnMSrIA3PA_tTEZOnZW";
 
 type Project = {
   id: string;
@@ -33,9 +35,26 @@ export function VueSite() {
   const [projects, setProjects] = useState<Project[]>(fallbackProjects);
 
   useEffect(() => {
-    supabase.from("projects").select("id,title_zh,title_en,country,city,status,rooms,area,price,delivery,image_url").eq("is_published", true).order("sort_order")
-      .then(({ data, error }: any) => {
-        if (error) { console.error("Unable to load projects", error); return; }
+    const controller = new AbortController();
+    const query = new URLSearchParams({
+      select: "id,title_zh,title_en,country,city,status,rooms,area,price,delivery,image_url",
+      is_published: "eq.true",
+      order: "sort_order.asc",
+    });
+
+    fetch(`${PROJECTS_API}?${query}`, {
+      headers: {
+        apikey: SUPABASE_PUBLISHABLE_KEY,
+        Authorization: `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+      },
+      cache: "no-store",
+      signal: controller.signal,
+    })
+      .then(async (response) => {
+        if (!response.ok) throw new Error(`建案資料讀取失敗（${response.status}）`);
+        return response.json();
+      })
+      .then((data: any[]) => {
         setProjects((data ?? []).map((item: any) => ({
           id: item.id,
           image: item.image_url || "/images/hero.jpg",
@@ -49,7 +68,12 @@ export function VueSite() {
           price: item.price,
           delivery: item.delivery,
         })));
+      })
+      .catch((error) => {
+        if (error.name !== "AbortError") console.error("Unable to load projects", error);
       });
+
+    return () => controller.abort();
   }, []);
 
   const filtered = useMemo(() => projects.filter((project) => {
