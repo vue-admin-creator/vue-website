@@ -105,8 +105,8 @@ export function VueSite() {
           {[
             ["/images/hero.jpg", "紐約", "NEW YORK"],
             ["/images/project-1.jpg", "波士頓", "BOSTON"],
-            ["/images/project-4.jpg", "加州", "CALIFORNIA"],
-            ["/images/project-5.jpg", "亞利桑那", "ARIZONA"],
+            ["/images/city-california.jpg", "加州", "CALIFORNIA"],
+            ["/images/city-arizona.jpg", "亞利桑那州", "ARIZONA"],
           ].map(([image, zh, en]) => (
             <article className="city-card" key={en}>
               <Image src={image} alt={`${zh}城市代表景觀`} fill sizes="(max-width: 620px) 86vw, (max-width: 900px) 43vw, 24vw" />
