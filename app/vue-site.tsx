@@ -20,19 +20,14 @@ type Project = {
   delivery: string;
 };
 
-const fallbackProjects: Project[] = [
-  { id: "fallback-1", image: "/images/hero.jpg", country: "美國", city: "紐約", status: "精選", zh: "曼哈頓天際奢邸", en: "MANHATTAN SKYLINE RESIDENCES", rooms: "1–3 房", area: "18–42 坪", price: "USD 1.25M 起", delivery: "現房" },
-  { id: "fallback-2", image: "/images/project-1.jpg", country: "美國", city: "波士頓", status: "新案", zh: "查爾斯河畔名邸", en: "CHARLES RIVER COLLECTION", rooms: "1–3 房", area: "16–36 坪", price: "USD 850K 起", delivery: "2027 Q2" },
-  { id: "fallback-3", image: "/images/city-california.jpg", country: "美國", city: "加州", status: "即將完售", zh: "灣區森活美學居", en: "BAY AREA GARDEN HOMES", rooms: "2–4 房", area: "28–58 坪", price: "USD 1.08M 起", delivery: "2026 Q3" },
-  { id: "fallback-4", image: "/images/city-arizona.jpg", country: "美國", city: "亞利桑那州", status: "精選", zh: "鳳凰城沙漠藝境", en: "SONORAN DESERT LIVING", rooms: "2–4 房", area: "32–66 坪", price: "USD 590K 起", delivery: "現房" },
-];
-
 export function VueSite() {
   const [country, setCountry] = useState("全部地區");
   const [status, setStatus] = useState("全部狀態");
   const [query, setQuery] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
-  const [projects, setProjects] = useState<Project[]>(fallbackProjects);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [projectsLoading, setProjectsLoading] = useState(true);
+  const [projectsError, setProjectsError] = useState(false);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -45,7 +40,6 @@ export function VueSite() {
     fetch(`${PROJECTS_API}?${query}`, {
       headers: {
         apikey: SUPABASE_PUBLISHABLE_KEY,
-        Authorization: `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
       },
       cache: "no-store",
       signal: controller.signal,
@@ -70,8 +64,12 @@ export function VueSite() {
         })));
       })
       .catch((error) => {
-        if (error.name !== "AbortError") console.error("Unable to load projects", error);
-      });
+        if (error.name !== "AbortError") {
+          setProjectsError(true);
+          console.error("Unable to load projects", error);
+        }
+      })
+      .finally(() => setProjectsLoading(false));
 
     return () => controller.abort();
   }, []);
@@ -127,7 +125,7 @@ export function VueSite() {
           <label><span>地區</span><select value={country} onChange={(e) => setCountry(e.target.value)}><option>全部地區</option><option>美國</option></select></label>
           <label><span>狀態</span><select value={status} onChange={(e) => setStatus(e.target.value)}><option>全部狀態</option><option>精選</option><option>新案</option><option>即將完售</option></select></label>
           <label className="search"><span>搜尋</span><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="建案名稱或城市" /></label>
-          <p>{String(filtered.length).padStart(2, "0")} PROJECTS</p>
+          <p>{projectsLoading ? "--" : String(filtered.length).padStart(2, "0")} PROJECTS</p>
         </div>
         <div className="project-grid">
           {filtered.map((project) => (
@@ -137,7 +135,9 @@ export function VueSite() {
             </article>
           ))}
         </div>
-        {filtered.length === 0 && <div className="empty"><p>目前沒有符合條件的建案</p><button onClick={() => { setCountry("全部地區"); setStatus("全部狀態"); setQuery(""); }}>清除篩選</button></div>}
+        {projectsLoading && <div className="empty"><p>建案資料載入中…</p></div>}
+        {projectsError && <div className="empty"><p>建案資料暫時無法讀取，請稍後重新整理。</p></div>}
+        {!projectsLoading && !projectsError && filtered.length === 0 && <div className="empty"><p>目前沒有符合條件的建案</p><button onClick={() => { setCountry("全部地區"); setStatus("全部狀態"); setQuery(""); }}>清除篩選</button></div>}
       </section>
 
       <section className="global section">
